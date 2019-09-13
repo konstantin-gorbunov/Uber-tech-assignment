@@ -101,6 +101,11 @@ class Foursquare {
                     return
             }
             venue.address = locationObject["address"] as? String
+            if let bestPhotoObject = venueObject["bestPhoto"] as? [String: AnyObject],
+                let prefix = bestPhotoObject["prefix"] as? String,
+                let suffix = bestPhotoObject["suffix"] as? String {
+                venue.bestPhoto = URL(string: "\(prefix)300x500\(suffix)")
+            }
             DispatchQueue.main.async {
                 completion(Result.results(venue))
             }

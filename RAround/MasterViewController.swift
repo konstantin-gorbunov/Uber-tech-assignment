@@ -107,11 +107,11 @@ class MasterViewController: UIViewController {
 extension MasterViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        guard view.annotation != nil else {
+        guard let annotation = view.annotation else {
             return
         }
         performSegue(withIdentifier: "showDetail", sender: nil)
-        view.isSelected = false
+        mapView.deselectAnnotation(annotation, animated: true)
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {

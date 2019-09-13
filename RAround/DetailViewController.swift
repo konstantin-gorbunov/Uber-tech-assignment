@@ -13,6 +13,7 @@ class DetailViewController: UIViewController {
 
     @IBOutlet weak var detailDescriptionLabel: UILabel?
     @IBOutlet weak var addressDescriptionLabel: UILabel?
+    @IBOutlet weak var bestPhotoImageView: UIImageView?
 
     var detailItem: FoursquareVenue? {
         didSet {
@@ -32,11 +33,38 @@ class DetailViewController: UIViewController {
             navigationController?.navigationBar.topItem?.title = detailItem?.name.capitalized
         }
         addressDescriptionLabel?.text = detailItem?.address
+        
+        if let bestPhotoUrl = detailItem?.bestPhoto, let imageView = bestPhotoImageView {
+            imageView.downloaded(from: bestPhotoUrl)
+        }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         configureView()
+    }
+}
+
+extension UIImageView {
+    
+    func downloaded(from url: URL, contentMode mode: UIView.ContentMode = .scaleAspectFit) {
+        contentMode = mode
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard
+                let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
+                let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
+                let data = data, error == nil,
+                let image = UIImage(data: data)
+                else { return }
+            DispatchQueue.main.async() {
+                self.image = image
+            }
+            }.resume()
+    }
+    
+    func downloaded(from link: String, contentMode mode: UIView.ContentMode = .scaleAspectFit) {
+        guard let url = URL(string: link) else { return }
+        downloaded(from: url, contentMode: mode)
     }
 }
