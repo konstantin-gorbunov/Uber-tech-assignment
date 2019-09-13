@@ -9,10 +9,12 @@
 import Foundation
 import MapKit
 
-let clientId: String = "HXMSGXIEXRDE2PHPXIO2LCIC04CAK1EQEMDIASUJKHM4VFOF"
-let clientSecret: String = "YBRTMWXXNADTR5PJJQNO4MIFXZ2XAV4INLGA2GDD10J3CIRY"
-
 class Foursquare {
+    
+    private enum Constants {
+        static let clientId: String = "HXMSGXIEXRDE2PHPXIO2LCIC04CAK1EQEMDIASUJKHM4VFOF"
+        static let clientSecret: String = "YBRTMWXXNADTR5PJJQNO4MIFXZ2XAV4INLGA2GDD10J3CIRY"
+    }
     
     var session = URLSession.shared
     
@@ -104,7 +106,7 @@ class Foursquare {
     }
     
     private func foursquareSearchURL(for location: CLLocationCoordinate2D) -> URL? {
-        let URLString = "https://api.foursquare.com/v2/venues/search?ll=\(location.latitude),\(location.longitude)&v=20190912&query=restaurant&intent=checkin&limit=10&client_id=\(clientId)&client_secret=\(clientSecret)"
+        let URLString = "https://api.foursquare.com/v2/venues/search?ll=\(location.latitude),\(location.longitude)&v=20190912&query=restaurant&intent=checkin&limit=10&client_id=\(Constants.clientId)&client_secret=\(Constants.clientSecret)"
         return URL(string: URLString)
     }
 }

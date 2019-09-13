@@ -11,6 +11,10 @@ import MapKit
 
 class MasterViewController: UIViewController {
 
+    private enum Constants {
+        static let mapInitialSize: Double = 1000 // in meters
+    }
+    
     @IBOutlet weak var mapView: MKMapView!
     
     private var objects = [CLLocationCoordinate2D]()
@@ -20,27 +24,19 @@ class MasterViewController: UIViewController {
     
     private var baseLocation: CLLocation? = nil {
         didSet {
-            guard let locValue = baseLocation?.coordinate, let resolution = CLLocationDistance(exactly: 600)  else {
+            guard
+                let locValue = baseLocation?.coordinate,
+                let resolution = CLLocationDistance(exactly: Constants.mapInitialSize)
+                else {
                 return
             }
             let region = MKCoordinateRegion(center:locValue, latitudinalMeters: resolution, longitudinalMeters: resolution)
             mapView.setRegion(mapView.regionThatFits(region), animated: true)
-            
-            foursquare.searchFoursquare(for: locValue) { searchResults in
-                switch searchResults {
-                case .error(let error) :
-                    print("Error Searching: \(error)")
-                case .results(let results):
-                    print("Found \(results.searchResults.count)")
-                    self.addSearchResultData(results)
-                }
-            }
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         if CLLocationManager.authorizationStatus() == .notDetermined {
@@ -54,10 +50,26 @@ class MasterViewController: UIViewController {
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
+    // MARK: - Segues
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showDetail" {
+            if let annotation = mapView.selectedAnnotations.first,
+                let controller = (segue.destination as? UINavigationController)?.topViewController as? DetailViewController {
+                controller.detailItem = annotation
+                controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
+                controller.navigationItem.leftItemsSupplementBackButton = true
+            }
+        }
+    }
+    
+    // MARK: - Private
+    
     private func addSearchResultData(_ results: FoursquareSearchResults) {
         for venue in results.searchResults {
             if objects.contains(where: { $0.latitude == venue.location.latitude && $0.longitude == venue.location.longitude}) {
-                return
+                print("Venue with name \(venue.name) was added before.")
+                continue
             }
             let point = MKPointAnnotation()
             point.coordinate = venue.location
@@ -65,18 +77,16 @@ class MasterViewController: UIViewController {
             
             objects.insert(point.coordinate, at: 0)
         }
-        print(objects.count)
     }
     
-    // MARK: - Segues
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "showDetail" {
-            if let annotation = mapView.selectedAnnotations.first {
-                let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
-                controller.detailItem = annotation
-                controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
-                controller.navigationItem.leftItemsSupplementBackButton = true
+    private func askFoursquare(_ locValue: CLLocationCoordinate2D) {
+        foursquare.searchFoursquare(for: locValue) { searchResults in
+            switch searchResults {
+            case .error(let error) :
+                print("Error Searching: \(error)")
+            case .results(let results):
+                print("Found \(results.searchResults.count)")
+                self.addSearchResultData(results)
             }
         }
     }
@@ -88,8 +98,14 @@ extension MasterViewController: MKMapViewDelegate {
         guard view.annotation != nil else {
             return
         }
-        self.performSegue(withIdentifier: "showDetail", sender: nil)
+        performSegue(withIdentifier: "showDetail", sender: nil)
         view.isSelected = false
+    }
+    
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        if baseLocation != nil {
+            askFoursquare(mapView.centerCoordinate) // should be asked only after initial location was set
+        }
     }
 }
 
