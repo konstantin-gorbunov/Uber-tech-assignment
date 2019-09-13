@@ -13,20 +13,33 @@ class MasterViewController: UIViewController {
 
     @IBOutlet weak var mapView: MKMapView!
     
-    var detailViewController: DetailViewController? = nil
-    var objects = [CLLocationCoordinate2D]()
-    let locationManager = CLLocationManager()
+    private var objects = [CLLocationCoordinate2D]()
+    
+    private let locationManager = CLLocationManager()
+    private let foursquare = Foursquare()
+    
+    private var baseLocation: CLLocation? = nil {
+        didSet {
+            guard let locValue = baseLocation?.coordinate, let resolution = CLLocationDistance(exactly: 600)  else {
+                return
+            }
+            let region = MKCoordinateRegion(center:locValue, latitudinalMeters: resolution, longitudinalMeters: resolution)
+            mapView.setRegion(mapView.regionThatFits(region), animated: true)
+            
+            foursquare.searchFoursquare(for: locValue) { searchResults in
+                switch searchResults {
+                case .error(let error) :
+                    print("Error Searching: \(error)")
+                case .results(let results):
+                    print("Found \(results.searchResults.count)")
+                    self.addSearchResultData(results)
+                }
+            }
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)))
-        navigationItem.rightBarButtonItem = addButton
-        
-        if let split = splitViewController {
-            let controllers = split.viewControllers
-            detailViewController = (controllers[controllers.count - 1] as! UINavigationController).topViewController as? DetailViewController
-        }
         
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
@@ -35,18 +48,24 @@ class MasterViewController: UIViewController {
         }
         locationManager.startUpdatingLocation()
     }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: true)
     }
-
-    @objc
-    func insertNewObject(_ sender: Any) {
-        let point = MKPointAnnotation()
-        point.coordinate = mapView.centerCoordinate
-        mapView.addAnnotation(point)
-
-        objects.insert(point.coordinate, at: 0)
+    
+    private func addSearchResultData(_ results: FoursquareSearchResults) {
+        for venue in results.searchResults {
+            if objects.contains(where: { $0.latitude == venue.location.latitude && $0.longitude == venue.location.longitude}) {
+                return
+            }
+            let point = MKPointAnnotation()
+            point.coordinate = venue.location
+            mapView.addAnnotation(point)
+            
+            objects.insert(point.coordinate, at: 0)
+        }
+        print(objects.count)
     }
     
     // MARK: - Segues
@@ -77,10 +96,8 @@ extension MasterViewController: MKMapViewDelegate {
 extension MasterViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let locValue = manager.location?.coordinate, let meterResolution = CLLocationDistance(exactly: 600)  else {
-            return
+        if let _ = manager.location?.coordinate, baseLocation == nil {
+            baseLocation = manager.location
         }
-        let region = MKCoordinateRegion(center:locValue, latitudinalMeters: meterResolution, longitudinalMeters: meterResolution)
-        mapView.setRegion(mapView.regionThatFits(region), animated: true)
     }
 }

@@ -26,6 +26,8 @@ class DetailViewController: UIViewController {
             let roundedLat = NSString(format: "%.4f", detailPoint.latitude)
             let roundedLon = NSString(format: "%.4f", detailPoint.longitude)
             label.text = "Latitude: \(roundedLat), Longitude: \(roundedLon)"
+            
+            navigationController?.setNavigationBarHidden(false, animated: true)
         }
     }
 
