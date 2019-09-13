@@ -12,8 +12,8 @@ import MapKit
 class Foursquare {
     
     private enum Constants {
-        static let clientId: String = "HXMSGXIEXRDE2PHPXIO2LCIC04CAK1EQEMDIASUJKHM4VFOF"
-        static let clientSecret: String = "YBRTMWXXNADTR5PJJQNO4MIFXZ2XAV4INLGA2GDD10J3CIRY"
+        static let clientId: String = "TKWUKMDAEMGAGXXL1MAPT4IJCLJN2VHWLFP34DQFZXUFH5OL"
+        static let clientSecret: String = "5MXN3QVUYKINM04WPHXGABVIGKSO0JNP3FY2J1FPOJNYMWTR"
     }
     
     var session = URLSession.shared
