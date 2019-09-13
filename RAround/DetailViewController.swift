@@ -11,9 +11,10 @@ import MapKit
 
 class DetailViewController: UIViewController {
 
-    @IBOutlet weak var detailDescriptionLabel: UILabel!
+    @IBOutlet weak var detailDescriptionLabel: UILabel?
+    @IBOutlet weak var addressDescriptionLabel: UILabel?
 
-    var detailItem: MKAnnotation? {
+    var detailItem: FoursquareVenue? {
         didSet {
             // Update the view.
             configureView()
@@ -22,13 +23,15 @@ class DetailViewController: UIViewController {
     
     func configureView() {
         // Update the user interface for the detail item.
-        if let detailPoint = detailItem?.coordinate, let label = detailDescriptionLabel  {
+        if let detailPoint = detailItem?.location, let label = detailDescriptionLabel  {
             let roundedLat = NSString(format: "%.4f", detailPoint.latitude)
             let roundedLon = NSString(format: "%.4f", detailPoint.longitude)
             label.text = "Latitude: \(roundedLat), Longitude: \(roundedLon)"
             
             navigationController?.setNavigationBarHidden(false, animated: true)
+            navigationController?.navigationBar.topItem?.title = detailItem?.name.capitalized
         }
+        addressDescriptionLabel?.text = detailItem?.address
     }
 
     override func viewDidLoad() {

@@ -17,7 +17,7 @@ class MasterViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     
-    private var objects = [CLLocationCoordinate2D]()
+    private var objects = [FoursquareVenue]()
     
     private let locationManager = CLLocationManager()
     private let foursquare = Foursquare()
@@ -55,10 +55,22 @@ class MasterViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetail" {
             if let annotation = mapView.selectedAnnotations.first,
+                let selectedVenue = objects.first(where: { $0.location == annotation.coordinate }),
                 let controller = (segue.destination as? UINavigationController)?.topViewController as? DetailViewController {
-                controller.detailItem = annotation
+                controller.detailItem = selectedVenue
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
+                
+                foursquare.askDetails(for: selectedVenue) { detailsResults in
+                    switch detailsResults {
+                    case .error(let error) :
+                        print("Error Ask Details: \(error)")
+                    case .results(let results):
+                        print("Details Received for \(results.name)")
+                        // notify detail view controller about changes
+                        controller.detailItem = results
+                    }
+                }
             }
         }
     }
@@ -67,7 +79,7 @@ class MasterViewController: UIViewController {
     
     private func addSearchResultData(_ results: FoursquareSearchResults) {
         for venue in results.searchResults {
-            if objects.contains(where: { $0.latitude == venue.location.latitude && $0.longitude == venue.location.longitude}) {
+            if objects.contains(where: { $0.venueID == venue.venueID }) {
                 print("Venue with name \(venue.name) was added before.")
                 continue
             }
@@ -75,7 +87,7 @@ class MasterViewController: UIViewController {
             point.coordinate = venue.location
             mapView.addAnnotation(point)
             
-            objects.insert(point.coordinate, at: 0)
+            objects.insert(venue, at: 0)
         }
     }
     
@@ -115,5 +127,12 @@ extension MasterViewController: CLLocationManagerDelegate {
         if let _ = manager.location?.coordinate, baseLocation == nil {
             baseLocation = manager.location
         }
+    }
+}
+
+extension CLLocationCoordinate2D: Equatable {
+    
+    public static func ==(lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
+        return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
     }
 }

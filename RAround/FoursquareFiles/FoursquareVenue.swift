@@ -14,6 +14,7 @@ class FoursquareVenue {
     let venueID: String
     let name: String
     let location: CLLocationCoordinate2D
+    var address: String?
     
     init (_ venueID: String, _ name: String, _ location: CLLocationCoordinate2D) {
         self.venueID = venueID
