@@ -25,6 +25,8 @@
 		8B20BBEF232A7E9F0099C9EC /* Venue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B20BBED232A7E9F0099C9EC /* Venue.swift */; };
 		8B5A8911233213580031A7C6 /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B5A8910233213580031A7C6 /* UIImageViewExtension.swift */; };
 		8B5A8913233213E90031A7C6 /* CLLocationCoordinate2DExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B5A8912233213E90031A7C6 /* CLLocationCoordinate2DExtension.swift */; };
+		8B5A89152332247C0031A7C6 /* NetworkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B5A89142332247C0031A7C6 /* NetworkRouter.swift */; };
+		8B5A89162332247C0031A7C6 /* NetworkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B5A89142332247C0031A7C6 /* NetworkRouter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +58,7 @@
 		8B20BBED232A7E9F0099C9EC /* Venue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Venue.swift; sourceTree = "<group>"; };
 		8B5A8910233213580031A7C6 /* UIImageViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewExtension.swift; sourceTree = "<group>"; };
 		8B5A8912233213E90031A7C6 /* CLLocationCoordinate2DExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationCoordinate2DExtension.swift; sourceTree = "<group>"; };
+		8B5A89142332247C0031A7C6 /* NetworkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkRouter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +140,7 @@
 				8B20BBE7232A77C70099C9EC /* Foursquare.swift */,
 				8B20BBEA232A7D1D0099C9EC /* SearchResults.swift */,
 				8B20BBED232A7E9F0099C9EC /* Venue.swift */,
+				8B5A89142332247C0031A7C6 /* NetworkRouter.swift */,
 			);
 			path = FoursquareFiles;
 			sourceTree = "<group>";
@@ -254,6 +258,7 @@
 				8B5A8913233213E90031A7C6 /* CLLocationCoordinate2DExtension.swift in Sources */,
 				8B20BBE5232A76CB0099C9EC /* Result.swift in Sources */,
 				8B154DB823292C1D00BA6E26 /* AppDelegate.swift in Sources */,
+				8B5A89152332247C0031A7C6 /* NetworkRouter.swift in Sources */,
 				8B5A8911233213580031A7C6 /* UIImageViewExtension.swift in Sources */,
 				8B20BBEB232A7D1D0099C9EC /* SearchResults.swift in Sources */,
 			);
@@ -268,6 +273,7 @@
 				8B20BBEC232A7D1D0099C9EC /* SearchResults.swift in Sources */,
 				8B20BBE9232A77C70099C9EC /* Foursquare.swift in Sources */,
 				8B154DCF23292C1E00BA6E26 /* RAroundTests.swift in Sources */,
+				8B5A89162332247C0031A7C6 /* NetworkRouter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

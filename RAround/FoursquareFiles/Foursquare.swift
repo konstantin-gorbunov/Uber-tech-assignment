@@ -11,11 +11,6 @@ import MapKit
 
 class Foursquare {
     
-    private enum Constants {
-        static let clientId: String = "TKWUKMDAEMGAGXXL1MAPT4IJCLJN2VHWLFP34DQFZXUFH5OL"
-        static let clientSecret: String = "5MXN3QVUYKINM04WPHXGABVIGKSO0JNP3FY2J1FPOJNYMWTR"
-    }
-    
     var session = URLSession.shared
     
     private enum FError: Swift.Error {
@@ -24,7 +19,7 @@ class Foursquare {
     }
     
     func search(for location: CLLocationCoordinate2D, completion: @escaping (Result<SearchResults>) -> Void) {
-        guard let searchURL = searchURL(for: location) else {
+        guard let searchURL = NetworkRouter.getSearch(location).url else {
             completion(Result.error(FError.unknownAPIResponse))
             return
         }
@@ -73,7 +68,7 @@ class Foursquare {
     }
     
     func askDetails(for venue: Venue, completion: @escaping (Result<Venue>) -> Void) {
-        guard let detailsURL = detailURL(for: venue) else {
+        guard let detailsURL = NetworkRouter.getInfo(venue.venueID).url else {
             completion(Result.error(FError.unknownAPIResponse))
             return
         }
@@ -113,16 +108,6 @@ class Foursquare {
     }
     
     // MARK: - Private
-    
-    private func searchURL(for location: CLLocationCoordinate2D) -> URL? {
-        let urlString = "https://api.foursquare.com/v2/venues/search?ll=\(location.latitude),\(location.longitude)&v=20190912&query=restaurant&intent=checkin&limit=10&client_id=\(Constants.clientId)&client_secret=\(Constants.clientSecret)"
-        return URL(string: urlString)
-    }
-    
-    private func detailURL(for venue: Venue) -> URL? {
-        let urlString = "https://api.foursquare.com/v2/venues/\(venue.venueID)?v=20190913&client_id=\(Constants.clientId)&client_secret=\(Constants.clientSecret)"
-        return URL(string: urlString)
-    }
     
     private func requestData(for request: URLRequest, completion: @escaping (Error?, [String: AnyObject]?) -> Void) {
         session.dataTask(with: request) { (data, response, error) in
