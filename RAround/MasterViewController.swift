@@ -17,7 +17,7 @@ class MasterViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView?
     
-    private var objects = [FoursquareVenue]()
+    private var objects = [Venue]()
     
     private let locationManager = CLLocationManager()
     private let foursquare = Foursquare()
@@ -78,7 +78,7 @@ class MasterViewController: UIViewController {
     
     // MARK: - Private
     
-    private func addSearchResultData(_ results: FoursquareSearchResults) {
+    private func addSearchResultData(_ results: SearchResults) {
         for venue in results.searchResults {
             if objects.contains(where: { $0.venueID == venue.venueID }) {
                 print("Venue with name \(venue.name) was added before.")
@@ -93,7 +93,7 @@ class MasterViewController: UIViewController {
     }
     
     private func askFoursquare(_ locValue: CLLocationCoordinate2D) {
-        foursquare.searchFoursquare(for: locValue) { searchResults in
+        foursquare.search(for: locValue) { searchResults in
             switch searchResults {
             case .error(let error) :
                 print("Error Searching: \(error)")

@@ -15,7 +15,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var addressDescriptionLabel: UILabel?
     @IBOutlet weak var bestPhotoImageView: UIImageView?
 
-    var detailItem: FoursquareVenue? {
+    var detailItem: Venue? {
         didSet {
             // Update the view.
             configureView()

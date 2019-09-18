@@ -1,5 +1,5 @@
 //
-//  FoursquareVenue.swift
+//  Venue.swift
 //  RAround
 //
 //  Created by Kostiantyn Gorbunov on 12/09/2019.
@@ -9,7 +9,7 @@
 import Foundation
 import MapKit
 
-class FoursquareVenue {
+class Venue {
     
     let venueID: String
     let name: String

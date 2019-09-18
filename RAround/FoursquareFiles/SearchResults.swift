@@ -1,5 +1,5 @@
 //
-//  FoursquareSearchResults.swift
+//  SearchResults.swift
 //  RAround
 //
 //  Created by Kostiantyn Gorbunov on 12/09/2019.
@@ -9,7 +9,7 @@
 import Foundation
 import MapKit
 
-struct FoursquareSearchResults {
+struct SearchResults {
     let searchLocation: CLLocationCoordinate2D
-    let searchResults: [FoursquareVenue]
+    let searchResults: [Venue]
 }
