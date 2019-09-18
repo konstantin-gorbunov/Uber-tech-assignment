@@ -1,0 +1,4 @@
++ Unit tests in place for network client however it’s not properly tested;
+- No separation of concerns, the code is very tightly coupled which make unit testing harder like CLLocationManager inside MasterViewController.
+- There is no need to make Result object as it’s already built in swift 5 and this project is targeting swift 5, that’s also reflect that the candidate is not up to date with the language updates.
+- Usage of "force unwrapping !" in the code which is can lead to App crashes. For example In AppDelegate line 19,20,21
