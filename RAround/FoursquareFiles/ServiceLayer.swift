@@ -20,10 +20,11 @@ class ServiceLayer {
     
     func search(for location: CLLocationCoordinate2D, completion: @escaping (Result<SearchResults>) -> Void) {
         guard let searchURL = NetworkRouter.getSearch(location).url else {
-            completion(Result.error(FError.unknownAPIResponse))
+            DispatchQueue.main.async {
+                completion(Result.error(FError.unknownAPIResponse))
+            }
             return
         }
-        
         let searchRequest = URLRequest(url: searchURL)
         
         requestData(for: searchRequest) { error, dictionary  in
@@ -72,7 +73,6 @@ class ServiceLayer {
             completion(Result.error(FError.unknownAPIResponse))
             return
         }
-        
         let detailsRequest = URLRequest(url: detailsURL)
         
         requestData(for: detailsRequest) { error, dictionary  in
@@ -112,9 +112,7 @@ class ServiceLayer {
     private func requestData(for request: URLRequest, completion: @escaping (Error?, [String: AnyObject]?) -> Void) {
         session.dataTask(with: request) { (data, response, error) in
             if let error = error {
-                DispatchQueue.main.async {
-                    completion(error, nil)
-                }
+                completion(error, nil)
                 return
             }
             
@@ -122,9 +120,7 @@ class ServiceLayer {
                 let _ = response as? HTTPURLResponse,
                 let data = data
                 else {
-                    DispatchQueue.main.async {
-                        completion(FError.unknownAPIResponse, nil)
-                    }
+                    completion(FError.unknownAPIResponse, nil)
                     return
             }
             
@@ -134,18 +130,14 @@ class ServiceLayer {
                     let metaDictionary = resultsDictionary["meta"] as? [String: AnyObject],
                     let code = metaDictionary["code"] as? Int
                     else {
-                        DispatchQueue.main.async {
-                            completion(FError.unknownAPIResponse, nil)
-                        }
+                        completion(FError.unknownAPIResponse, nil)
                         return
                 }
                 switch (code) {
                 case 200:
                     print("Results processed OK")
                 default:
-                    DispatchQueue.main.async {
-                        completion(FError.generic, nil)
-                    }
+                    completion(FError.generic, nil)
                     return
                 }
                 completion(nil, resultsDictionary)
