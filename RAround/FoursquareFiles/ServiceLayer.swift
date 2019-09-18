@@ -1,5 +1,5 @@
 //
-//  Foursquare.swift
+//  ServiceLayer.swift
 //  RAround
 //
 //  Created by Kostiantyn Gorbunov on 12/09/2019.
@@ -9,7 +9,7 @@
 import Foundation
 import MapKit
 
-class Foursquare {
+class ServiceLayer {
     
     var session = URLSession.shared
     

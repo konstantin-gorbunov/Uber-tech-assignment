@@ -20,7 +20,7 @@ class MasterViewController: UIViewController {
     private var objects = [Venue]()
     
     private let locationManager = CLLocationManager()
-    private let foursquare = Foursquare()
+    private let foursquare = ServiceLayer()
     
     private var baseLocation: CLLocation? = nil {
         didSet {
