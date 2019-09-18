@@ -15,7 +15,7 @@ class MasterViewController: UIViewController {
         static let mapInitialSize: Double = 1000 // in meters
     }
     
-    @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var mapView: MKMapView?
     
     private var objects = [FoursquareVenue]()
     
@@ -26,6 +26,7 @@ class MasterViewController: UIViewController {
         didSet {
             guard
                 let locValue = baseLocation?.coordinate,
+                let mapView = mapView,
                 let resolution = CLLocationDistance(exactly: Constants.mapInitialSize)
                 else {
                 return
@@ -54,7 +55,7 @@ class MasterViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetail" {
-            if let annotation = mapView.selectedAnnotations.first,
+            if let annotation = mapView?.selectedAnnotations.first,
                 let selectedVenue = objects.first(where: { $0.location == annotation.coordinate }),
                 let controller = (segue.destination as? UINavigationController)?.topViewController as? DetailViewController {
                 controller.detailItem = selectedVenue
@@ -85,7 +86,7 @@ class MasterViewController: UIViewController {
             }
             let point = MKPointAnnotation()
             point.coordinate = venue.location
-            mapView.addAnnotation(point)
+            mapView?.addAnnotation(point)
             
             objects.insert(venue, at: 0)
         }
