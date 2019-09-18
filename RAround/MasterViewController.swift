@@ -24,15 +24,7 @@ class MasterViewController: UIViewController {
     
     private var baseLocation: CLLocation? = nil {
         didSet {
-            guard
-                let locValue = baseLocation?.coordinate,
-                let mapView = mapView,
-                let resolution = CLLocationDistance(exactly: Constants.mapInitialSize)
-                else {
-                return
-            }
-            let region = MKCoordinateRegion(center:locValue, latitudinalMeters: resolution, longitudinalMeters: resolution)
-            mapView.setRegion(mapView.regionThatFits(region), animated: true)
+            setMapRegion()
         }
     }
 
@@ -102,6 +94,18 @@ class MasterViewController: UIViewController {
                 self.addSearchResultData(results)
             }
         }
+    }
+    
+    private func setMapRegion() {
+        guard
+            let locValue = baseLocation?.coordinate,
+            let mapView = mapView,
+            let resolution = CLLocationDistance(exactly: Constants.mapInitialSize)
+            else {
+                return
+        }
+        let region = MKCoordinateRegion(center:locValue, latitudinalMeters: resolution, longitudinalMeters: resolution)
+        mapView.setRegion(mapView.regionThatFits(region), animated: true)
     }
 }
 
